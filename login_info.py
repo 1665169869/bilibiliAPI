@@ -1,5 +1,6 @@
 import requests
-import time
+from time import time
+from bilibiliAPI.sign import sign
 
 class login_info:
     # 统一返回response
@@ -10,7 +11,7 @@ class login_info:
         self.NUMBER_OF_LOGGED_IN_USER_STATUS = "http://api.bilibili.com/x/web-interface/nav/stat"
         self.GETCOIN = "http://account.bilibili.com/site/getCoin"
         self.APPKEY = "1d8b6e7d45233436"
-        self.SIGN = "560c52ccd288fed045859ed18bffd973"
+        self.appsec = "560c52ccd288fed045859ed18bffd973"
         self.ACCESS_KEY = access_key
     def navigationBarUserInformation(self, SESSDATA, ifEscape=False):
         '''
@@ -44,11 +45,12 @@ class login_info:
         sign                                    ==              APP签名
         NUMBER_OF_LOGGED-IN_USER_STATUS         ==              登录用户状态数接口（双端）
         '''
+        ts = int(time())
         params = {
             "access_key": self.ACCESS_KEY,
             "appkey": self.APPKEY,
-            "ts": int(time.time()),
-            "sign": self.SIGN
+            "ts": ts,
+            "sign": sign("access_key=" + self.ACCESS_KEY + "&appkey=" + self.APPKEY + "&ts=" + ts + self.appsec)
         }
         response = requests.get(self.LOGIN_USER_LNFORMATION, params=params)
         return response
