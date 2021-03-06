@@ -1,6 +1,7 @@
 import requests
-from time import time
-from bilibiliAPI.sign import sign
+from time import mktime
+from datetime import datetime
+from hashlib import md5
 # 二维码登录
 # web端流程&逻辑：
 
@@ -65,13 +66,17 @@ class QR:
         ts	        num	    当前时间戳	APP方式必要	
         sign	    str	    APP签名	    APP方式必要	
         '''
-        ts = int(time())
+        ts = int(mktime(datetime.now().timetuple())) # unix时间戳
+        m = md5() # 创建md5对象
+        m.update(bytes('appkey=' + self.appkey + '&local_id=0&ts=%d59b43e04ad6965f34319062b478f83dd' %ts, encoding='utf-8')) # 只需要在ts后面加上sign盐值然后把表单md5加密即得到sign值
+        sign = m.hexdigest() # 取出md5值
+
         # 只需要在ts后面加上sign盐值然后把表单md5加密即得到sign值
         data = {
             "appkey": self.appkey,
             "local_id": "0",
             "ts": ts,
-            "sign": sign("appkey=4409e2ce8ffd12b8&local_id=0&ts=" + ts + self.appsec)
+            "sign":sign
         }
         response = requests.post(self.passportTvLogin, data=data)
         return response
@@ -84,13 +89,15 @@ class QR:
         密钥超时为180秒
         验证登录成功后会返回可用于APP方式登录的access_key以及refresh_token
         '''
-        ts = int(time())
+        ts = int(mktime(datetime.now().timetuple())) # unix时间戳
+        m = md5(bytes('appkey=' + self.appkey + '&auth_code=%s' %auth_code + '&local_id=0&ts=%d59b43e04ad6965f34319062b478f83dd' %ts, encoding='utf-8'))
+        sign = m.hexdigest()
         data = {
             "appkey": self.appkey,
             "auth_code": auth_code,
             "local_id": 0,
             "ts": ts,
-            "sign":sign("appkey="+self.appkey+"&auth_code="+auth_code+"local_id=0&ts="+ts+self.appsec)
+            "sign":sign
         }
         response = requests.post(self.passportTvLoginPoll,data=data)
         return response

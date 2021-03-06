@@ -3,7 +3,7 @@
 #
 
 from bilibiliAPI.login_info import login_info
-from QR import QR
+from bilibiliAPI.QR import QR
 
 table='fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF'
 tr={}
