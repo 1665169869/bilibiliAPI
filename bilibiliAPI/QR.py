@@ -19,13 +19,14 @@ from hashlib import md5
 # if code == 86039 提示未扫描&goto 2 else goto 5
 # if code == 86038 提示二维码超时或错误&goto 1
 class QR:
-    def __init__(self):
+    def __init__(self, proxies={}):
         self.getLoginUrl = "http://passport.bilibili.com/qrcode/getLoginUrl"
         self.getLoginInfo = "http://passport.bilibili.com/qrcode/getLoginInfo"
         self.passportTvLogin = "http://passport.bilibili.com/x/passport-tv-login/qrcode/auth_code"
         self.passportTvLoginPoll = "http://passport.bilibili.com/x/passport-tv-login/qrcode/poll"
         self.appsec = "59b43e04ad6965f34319062b478f83dd"
         self.appkey = "4409e2ce8ffd12b8"
+        self.proxies=proxies
     def QRCodeLogin(self):
         '''
         申请二维码URL及扫码密钥（web端）
@@ -33,7 +34,7 @@ class QR:
         请求方式：GET
         密钥超时为180秒
         '''
-        response = requests.get(self.getLoginUrl)
+        response = requests.get(self.getLoginUrl, proxies=self.proxies)
         return response
     def scanCodeLogin(self, oauthKey, gourl="http://www.bilibili.com"):
         '''
@@ -49,7 +50,7 @@ class QR:
             "oauthkey": oauthKey,
             "gourl": gourl
         }
-        response = requests.post(self.getLoginInfo, data=data)
+        response = requests.post(self.getLoginInfo, data=data, proxies=self.proxies)
         return response
     def QRCodeLoginTV(self):
         '''
@@ -78,7 +79,7 @@ class QR:
             "ts": ts,
             "sign":sign
         }
-        response = requests.post(self.passportTvLogin, data=data)
+        response = requests.post(self.passportTvLogin, data=data, proxies=self.proxies)
         return response
     def scanCodeLoginTV(self, auth_code):
         '''
@@ -99,5 +100,6 @@ class QR:
             "ts": ts,
             "sign":sign
         }
-        response = requests.post(self.passportTvLoginPoll,data=data)
+        response = requests.post(self.passportTvLoginPoll,data=data, proxies=self.proxies)
         return response
+

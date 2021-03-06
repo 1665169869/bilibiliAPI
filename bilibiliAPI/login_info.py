@@ -5,7 +5,7 @@ from hashlib import md5
 
 class login_info:
     # 统一返回response
-    def __init__(self):
+    def __init__(self, proxies={}):
         self.NAVIGATION_BAR_USER_INFORMATION_ESCAPE = "http://api.bilibili.com/nav"
         self.NAVIGATION_BAR_USER_INFORMATION = "http://api.bilibili.com/x/web-interface/nav"
         self.LOGIN_USER_LNFORMATION = "http://app.bilibili.com/x/v2/account/myinfo"
@@ -13,6 +13,7 @@ class login_info:
         self.GETCOIN = "http://account.bilibili.com/site/getCoin"
         self.APPKEY = "1d8b6e7d45233436"
         self.appsec = "560c52ccd288fed045859ed18bffd973"
+        self.proxies=proxies
     def navigationBarUserInformation(self, SESSDATA, ifEscape=False):
         '''
         导航栏用户信息
@@ -28,9 +29,9 @@ class login_info:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.81"
         }
         if ifEscape == True:
-            response = requests.get(self.NAVIGATION_BAR_USER_INFORMATION_ESCAPE, headers=headers)
+            response = requests.get(self.NAVIGATION_BAR_USER_INFORMATION_ESCAPE, headers=headers, proxies=self.proxies)
         else:
-            response = requests.get(self.NAVIGATION_BAR_USER_INFORMATION, headers=headers)
+            response = requests.get(self.NAVIGATION_BAR_USER_INFORMATION, headers=headers, proxies=self.proxies)
         return response
     def loginUserLnformation(self, access_key):
         '''
@@ -53,7 +54,7 @@ class login_info:
             "ts": ts,
             "sign": m.hexdigest()
         }
-        response = requests.get(self.LOGIN_USER_LNFORMATION, params=params)
+        response = requests.get(self.LOGIN_USER_LNFORMATION, params=params, proxies=self.proxies)
         return response
     def numberOfLoggedInUserStatus(self, SESSDATA="",  access_key=""):
         '''
@@ -69,9 +70,9 @@ class login_info:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.81"
         }
         if SESSDATA != "":
-            response  = requests.get(self.NUMBER_OF_LOGGED_IN_USER_STATUS, headers=headers)
+            response  = requests.get(self.NUMBER_OF_LOGGED_IN_USER_STATUS, headers=headers, proxies=self.proxies)
         else:
-            response = requests.get(self.NUMBER_OF_LOGGED_IN_USER_STATUS, params={"access_key":access_key})
+            response = requests.get(self.NUMBER_OF_LOGGED_IN_USER_STATUS, params={"access_key":access_key}, proxies=self.proxies)
         return response
     def getCoin(self, SESSDATA):
         '''
@@ -84,5 +85,5 @@ class login_info:
             "cookie": "SESSDATA=" + SESSDATA,
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 Edg/88.0.705.81"
         }
-        response = requests.get(self.GETCOIN, headers=headers)
+        response = requests.get(self.GETCOIN, headers=headers, proxies=self.proxies)
         return response
